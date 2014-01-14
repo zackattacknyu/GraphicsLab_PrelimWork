@@ -42,3 +42,11 @@ frequency = 0:1/numEntries:(1 - 1/numEntries);
 phase = atan2(imag(dataTransform),real(dataTransform));
 
 plot(frequency,phase)
+
+%Take the N coefficients from the FFT
+%1. Make an N x N matrix
+%2. For each coefficient X_i, plot the sine wave from the cofficient
+%   For each of the N times from the sample, find the value of the sine
+%   wave and put the values into row i of the N x N matrix
+%Repeat 1 and 2 for different phase shifts of the FFT
+%Do a search on the matrices to find a place where they line up
