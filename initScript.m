@@ -31,7 +31,14 @@ dataSize = size(data);
 numEntries = dataSize(2);
 
 %plot the original data
-plot(data)
+plot(data);
 
-%originalDataFFT = fft(originalData);
+%convert the data to frequency space
+dataTransform = fft(data);
 
+%find the amplitude, frequency, and phase of the fourier transform
+amplitude = sqrt(real(dataTransform).^2 + imag(dataTransform).^2)/numEntries;
+frequency = 0:1/numEntries:(1 - 1/numEntries);
+phase = atan2(imag(dataTransform),real(dataTransform));
+
+plot(frequency,phase)
