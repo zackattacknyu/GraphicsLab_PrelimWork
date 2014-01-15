@@ -22,8 +22,8 @@ seqToFind = [234 201 198 255];
 sizeSeq = size(seqToFind);
 numPointsSeq = sizeSeq(2); %number of points in seqToFind
 
-firstInstance = firstNumPoints
-secondInstance = firstInstance + numPointsSeq + secondNumPoints
+firstInstance = firstNumPoints;
+secondInstance = firstInstance + numPointsSeq + secondNumPoints;
 
 %this creates the signal that will be analyzed
 data = [data1 seqToFind data2 seqToFind data3];
@@ -68,6 +68,66 @@ for k = 0:(numEntries-1),
     fData = [fData;currentRow];
 end
 
+%do circshift(fData,[0,1]) to do a proper shift
+
+%{
+
+This block of code does a phase shift in a way that I think is incorrect
+
+%this shifts the fourier coefficients in order and then generates
+%   the N by N matrix
+for phaseShift = 1:numEntries,
+
+    shiftedTransform = circshift(dataTransform,[0,phaseShift]);
+    shifted_fData = [];
+    for k = 0:(numEntries-1),
+        currentRow = [];
+        for tVal = 0:(numEntries-1),
+            index = k+1;
+            value = shiftedTransform(index)*exp(2*pi*1i*tVal*k/numEntries);
+            currentRow = [currentRow value];
+        end
+        shifted_fData = [shifted_fData;currentRow];
+    end
+    
+    diffShifted = shifted_fData-fData;
+    diffShifted = abs(diffShifted);
+    count = 0;
+    for row = 1:numEntries,
+        for col = 1:numEntries,
+            if(diffShifted(row,col) < 10^(-3))
+                count = count + 1;
+            end
+        end
+    end
+
+
+end
+
+
+%}
+
+%this will shift the NxN matrix generated
+countArray = [];
+for phaseShift = 1:(numEntries-1),
+
+    shiftedData = circshift(fData,[0,phaseShift]);
+    
+    diffShifted = shiftedData-fData;
+    diffShifted = abs(diffShifted);
+    count = 0;
+    for row = 1:numEntries,
+        for col = 1:numEntries,
+            if(diffShifted(row,col) < 10^(-3))
+                count = count + 1;
+            end
+        end
+    end
+    
+    countArray = [countArray count];
+
+end
+
 %This reconstructs the signal from that matrix for verification
 origSignal = [];
 for tVal = 1:numEntries,
@@ -78,9 +138,6 @@ for tVal = 1:numEntries,
     end
     origSignal = [origSignal currentSum];
 end
-
-
-%Use fftshift function to do a phase shift of the signal
 
 
 
