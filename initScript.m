@@ -37,11 +37,11 @@ plot(data);
 dataTransform = fft(data);
 
 %find the amplitude, frequency, and phase of the fourier transform
-amplitude = sqrt(real(dataTransform).^2 + imag(dataTransform).^2)/numEntries;
-frequency = 0:1/numEntries:(1 - 1/numEntries);
-phase = atan2(imag(dataTransform),real(dataTransform));
+%amplitude = sqrt(real(dataTransform).^2 + imag(dataTransform).^2)/numEntries;
+%frequency = 0:1/numEntries:(1 - 1/numEntries);
+%phase = atan2(imag(dataTransform),real(dataTransform));
 
-plot(frequency,phase)
+%plot(frequency,phase)
 
 %Take the N coefficients from the FFT
 %1. Make an N x N matrix
@@ -50,3 +50,47 @@ plot(frequency,phase)
 %   wave and put the values into row i of the N x N matrix
 %Repeat 1 and 2 for different phase shifts of the FFT
 %Do a search on the matrices to find a place where they line up
+
+%When reconstructing the signal we know that 
+% x[t] = 1/N sum_{k=0}^{N-1} X_k exp(2*pi*i*t*k/N)
+%We will then make an NxN matrix where each column is a different t
+%   and each row is a term in the summation
+
+%This will make the initial N x N matrix
+fData = [];
+for k = 0:(numEntries-1),
+    currentRow = [];
+    for tVal = 0:(numEntries-1),
+        index = k+1;
+        value = dataTransform(index)*exp(2*pi*1i*tVal*k/numEntries);
+        currentRow = [currentRow value];
+    end
+    fData = [fData;currentRow];
+end
+
+%This reconstructs the signal from that matrix for verification
+origSignal = [];
+for tVal = 1:numEntries,
+    currentSum = 0;
+    for k = 1:numEntries,
+        index = k+1;
+        currentSum = currentSum + fData(k,tVal);
+    end
+    origSignal = [origSignal currentSum];
+end
+
+
+%Use fftshift function to do a phase shift of the signal
+
+
+
+
+
+
+
+
+
+
+
+
+
