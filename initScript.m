@@ -34,16 +34,6 @@ numEntries = dataSize(2);
 %plot the original data
 plot(data);
 
-%convert the data to frequency space
-dataTransform = fft(data);
-
-%find the amplitude, frequency, and phase of the fourier transform
-amplitude = sqrt(real(dataTransform).^2 + imag(dataTransform).^2);
-%frequency = 0:1/numEntries:(1 - 1/numEntries);
-phase = atan2(imag(dataTransform),real(dataTransform));
-
-%plot(frequency,phase)
-
 %{
 
 Procedure to be used: 
@@ -69,25 +59,36 @@ Procedure to be used:
 
 %}
 
-newPhase = phase + 1;
-newTransform = amplitude.*exp(1i.*phase);
+%convert the data to frequency space
+dataTransform = fft(data);
+
+%find the amplitude, frequency, and phase of the fourier transform
+%frequency = 0:1/numEntries:(1 - 1/numEntries);
+amplitude = sqrt(real(dataTransform).^2 + imag(dataTransform).^2);
+phase = atan2(imag(dataTransform),real(dataTransform));
+
+%plot(frequency,phase)
 
 %This will make the initial N x N matrix
-fData = fourierMatrix(dataTransform);
-
-%{
+originalData = fourierMatrix(dataTransform);
 
 %this will do a phase shift and then make a new matrix
 countArray = [];
 for phaseShift = 1:(numEntries-1),
-    shiftedData = circshift(fData,[0,phaseShift]);
     
-    diffShifted = shiftedData-fData;
-    diffShifted = abs(diffShifted);
+    newPhase = phase + phaseShift;
+    innerExponent = i.*newPhase;
+    multiplier = exp(innerExponent);
+    
+    newTransform = amplitude.*multiplier;
+    
+    shiftedData = fourierMatrix(newTransform);
+    diffShifted = abs(shiftedData-originalData);
+    
     count = 0;
     for row = 1:numEntries,
         for col = 1:numEntries,
-            if(diffShifted(row,col) < 10^(-3))
+            if(diffShifted(row,col) < 10^(-2))
                 count = count + 1;
             end
         end
@@ -97,7 +98,7 @@ for phaseShift = 1:(numEntries-1),
 end
 
 plot(countArray)
-%}
+
 
 
 
