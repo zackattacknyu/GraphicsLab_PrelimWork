@@ -6,6 +6,7 @@ range = 50;
 %   minNumPoints and (minNumPoints + rangeNumPoints)
 minNumPoints = 10;
 rangeNumPoints = 20;
+endNumPoints = 40; %number of points added to end
 
 numPointsVector = floor(rand(1,3)*rangeNumPoints + minNumPoints);
 firstNumPoints = numPointsVector(1,1);
@@ -15,15 +16,15 @@ thirdNumPoints = numPointsVector(1,3);
 %generates the random data
 data1 = floor(rand(1,firstNumPoints)*range);
 data2 = floor(rand(1,secondNumPoints)*range);
-data3 = floor(rand(1,thirdNumPoints)*range);
+data3 = floor(rand(1,thirdNumPoints + endNumPoints)*range); 
 
 %the sequence seqToFind will be inserted in two different places
 seqToFind = [234 201 198 255];
 sizeSeq = size(seqToFind);
 numPointsSeq = sizeSeq(2); %number of points in seqToFind
 
-firstInstance = firstNumPoints;
-secondInstance = firstInstance + numPointsSeq + secondNumPoints;
+firstInstance = firstNumPoints
+secondInstance = firstInstance + numPointsSeq + secondNumPoints
 
 %this creates the signal that will be analyzed
 data = [data1 seqToFind data2 seqToFind data3];
@@ -37,80 +38,48 @@ plot(data);
 dataTransform = fft(data);
 
 %find the amplitude, frequency, and phase of the fourier transform
-%amplitude = sqrt(real(dataTransform).^2 + imag(dataTransform).^2)/numEntries;
+amplitude = sqrt(real(dataTransform).^2 + imag(dataTransform).^2);
 %frequency = 0:1/numEntries:(1 - 1/numEntries);
-%phase = atan2(imag(dataTransform),real(dataTransform));
+phase = atan2(imag(dataTransform),real(dataTransform));
 
 %plot(frequency,phase)
 
-%Take the N coefficients from the FFT
-%1. Make an N x N matrix
-%2. For each coefficient X_i, plot the sine wave from the cofficient
-%   For each of the N times from the sample, find the value of the sine
-%   wave and put the values into row i of the N x N matrix
-%Repeat 1 and 2 for different phase shifts of the FFT
-%Do a search on the matrices to find a place where they line up
-
-%When reconstructing the signal we know that 
-% x[t] = 1/N sum_{k=0}^{N-1} X_k exp(2*pi*i*t*k/N)
-%We will then make an NxN matrix where each column is a different t
-%   and each row is a term in the summation
-
-%This will make the initial N x N matrix
-fData = [];
-for k = 0:(numEntries-1),
-    currentRow = [];
-    for tVal = 0:(numEntries-1),
-        index = k+1;
-        value = dataTransform(index)*exp(2*pi*1i*tVal*k/numEntries);
-        currentRow = [currentRow value];
-    end
-    fData = [fData;currentRow];
-end
-
-%do circshift(fData,[0,1]) to do a proper shift
-
 %{
 
-This block of code does a phase shift in a way that I think is incorrect
-
-%this shifts the fourier coefficients in order and then generates
-%   the N by N matrix
-for phaseShift = 1:numEntries,
-
-    shiftedTransform = circshift(dataTransform,[0,phaseShift]);
-    shifted_fData = [];
-    for k = 0:(numEntries-1),
-        currentRow = [];
-        for tVal = 0:(numEntries-1),
-            index = k+1;
-            value = shiftedTransform(index)*exp(2*pi*1i*tVal*k/numEntries);
-            currentRow = [currentRow value];
-        end
-        shifted_fData = [shifted_fData;currentRow];
-    end
-    
-    diffShifted = shifted_fData-fData;
-    diffShifted = abs(diffShifted);
-    count = 0;
-    for row = 1:numEntries,
-        for col = 1:numEntries,
-            if(diffShifted(row,col) < 10^(-3))
-                count = count + 1;
-            end
-        end
-    end
-
-
-end
-
+Procedure to be used: 
+1. Take the N coefficients from the FFT
+2. Construct an NxN matrix A
+    When reconstructing the signal we know that 
+        x[t] = 1/N sum_{k=0}^{N-1} X_k exp(2*pi*i*t*k/N)
+    We will then make an NxN matrix where each column is a different t
+        and each row is a term in the summation
+3. TODO: Plot the wave for each of the cofficients
+4. Do a phase shift on the FFT
+     Find the amplitude and phase array
+     Adjust the values of the phase array to make array newPhase
+     Use amplitude and newPhase to get new Fourier cofficients
+        Do amplitude*exp(i*newPhase)
+5. Repeat step 2 for the new Fourier coefficients to generate
+    a new NxN matrix B
+6. Compare matrix A and matrix B to see if there any line ups
+    This means computing matrix C = abs(A-B) and counting the number of
+        entries that are near zero (< 10^-3)
+7. Repeat steps 4-6 for the different phase shifts
+        
 
 %}
 
-%this will shift the NxN matrix generated
+newPhase = phase + 1;
+newTransform = amplitude.*exp(1i.*phase);
+
+%This will make the initial N x N matrix
+fData = fourierMatrix(dataTransform);
+
+%{
+
+%this will do a phase shift and then make a new matrix
 countArray = [];
 for phaseShift = 1:(numEntries-1),
-
     shiftedData = circshift(fData,[0,phaseShift]);
     
     diffShifted = shiftedData-fData;
@@ -123,21 +92,13 @@ for phaseShift = 1:(numEntries-1),
             end
         end
     end
-    
     countArray = [countArray count];
 
 end
 
-%This reconstructs the signal from that matrix for verification
-origSignal = [];
-for tVal = 1:numEntries,
-    currentSum = 0;
-    for k = 1:numEntries,
-        index = k+1;
-        currentSum = currentSum + fData(k,tVal);
-    end
-    origSignal = [origSignal currentSum];
-end
+plot(countArray)
+%}
+
 
 
 
