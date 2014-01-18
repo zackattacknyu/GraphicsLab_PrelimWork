@@ -63,26 +63,37 @@ Procedure to be used:
 dataTransform = fft(data);
 
 %find the amplitude, frequency, and phase of the fourier transform
-%frequency = 0:1/numEntries:(1 - 1/numEntries);
+frequency = 0:1/numEntries:(1 - 1/numEntries);
 amplitude = sqrt(real(dataTransform).^2 + imag(dataTransform).^2);
 phase = atan2(imag(dataTransform),real(dataTransform));
 
-%plot(frequency,phase)
+%plot(frequency,amplitude)
 
 %This will make the initial N x N matrix
 originalData = fourierMatrix(dataTransform);
 
+%{
+xVectorOriginal = [];
+for col = 1:numEntries,
+    xVectorOriginal = [xVectorOriginal sum(originalData(:,col))]; 
+end
+%}
+
 %this will do a phase shift and then make a new matrix
 countArray = [];
-for phaseShift = 1:(numEntries-1),
+for phaseShift = 0:(2*pi)/numEntries:2*pi,
     
     newPhase = phase + phaseShift;
-    innerExponent = i.*newPhase;
+    innerExponent = -2*pi*1i.*(newPhase.*frequency);
     multiplier = exp(innerExponent);
     
     newTransform = amplitude.*multiplier;
     
     shiftedData = fourierMatrix(newTransform);
+    
+    %{
+    
+    One idea for comparison: 
     diffShifted = abs(shiftedData-originalData);
     
     count = 0;
@@ -93,11 +104,27 @@ for phaseShift = 1:(numEntries-1),
             end
         end
     end
-    countArray = [countArray count];
+    %}
+    
+    %{
+    Another comparison idea:
+    xVectorShifted = [];
+    for col = 1:numEntries,
+        xVectorShifted = [xVectorShifted sum(shiftedData(:,col))]; 
+    end
+    
+    diffVector = xVectorShifted - xVectorOriginal;
+    if(phaseShift < pi/4)
+       diffVectorToSave = diffVector; 
+    end
+    meanDifference = mean(abs(diffVector));
+    %}
+    
+    %countArray = [countArray meanDifference];
 
 end
 
-plot(countArray)
+%plot(countArray)
 
 
 
