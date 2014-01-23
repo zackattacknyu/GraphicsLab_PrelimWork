@@ -79,6 +79,29 @@ for col = 1:numEntries,
 end
 %}
 
+%this will compare two matrices and compare the column vectors in each
+matrixOne = originalData;
+matrixTwo = originalData;
+sizeOne = size(matrixOne);
+sizeTwo = size(matrixTwo);
+Diffs = [];
+SmallDiffs = [];
+for col1 = 1:sizeOne(2),
+    currentDiff = [];
+    for col2 = 1:sizeTwo(2),
+        
+        currentCol1 = matrixOne(:,col1);
+        currentCol2 = matrixTwo(:,col2);
+        
+        difference = norm(currentCol1-currentCol2,2);
+        currentDiff = [currentDiff difference];
+        if difference < 5
+            SmallDiffs = [SmallDiffs;col1 col2];
+        end
+    end
+    Diffs = [Diffs;currentDiff];
+end
+
 %this will do a phase shift and then make a new matrix
 countArray = [];
 for phaseShift = 0:(2*pi)/numEntries:2*pi,
@@ -91,40 +114,9 @@ for phaseShift = 0:(2*pi)/numEntries:2*pi,
     
     shiftedData = fourierMatrix(newTransform);
     
-    %{
     
-    One idea for comparison: 
-    diffShifted = abs(shiftedData-originalData);
-    
-    count = 0;
-    for row = 1:numEntries,
-        for col = 1:numEntries,
-            if(diffShifted(row,col) < 10^(-2))
-                count = count + 1;
-            end
-        end
-    end
-    %}
-    
-    %{
-    Another comparison idea:
-    xVectorShifted = [];
-    for col = 1:numEntries,
-        xVectorShifted = [xVectorShifted sum(shiftedData(:,col))]; 
-    end
-    
-    diffVector = xVectorShifted - xVectorOriginal;
-    if(phaseShift < pi/4)
-       diffVectorToSave = diffVector; 
-    end
-    meanDifference = mean(abs(diffVector));
-    %}
-    
-    %countArray = [countArray meanDifference];
 
 end
-
-%plot(countArray)
 
 
 

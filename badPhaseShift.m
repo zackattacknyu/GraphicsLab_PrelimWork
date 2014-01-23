@@ -72,3 +72,34 @@ for phaseShift = 1:(numEntries-1),
 end
 
 %}
+
+%{
+    
+    One idea for comparison: 
+    diffShifted = abs(shiftedData-originalData);
+    
+    count = 0;
+    for row = 1:numEntries,
+        for col = 1:numEntries,
+            if(diffShifted(row,col) < 10^(-2))
+                count = count + 1;
+            end
+        end
+    end
+    %}
+    
+    %{
+    Another comparison idea:
+    xVectorShifted = [];
+    for col = 1:numEntries,
+        xVectorShifted = [xVectorShifted sum(shiftedData(:,col))]; 
+    end
+    
+    diffVector = xVectorShifted - xVectorOriginal;
+    if(phaseShift < pi/4)
+       diffVectorToSave = diffVector; 
+    end
+    meanDifference = mean(abs(diffVector));
+    %}
+    
+    %countArray = [countArray meanDifference];
