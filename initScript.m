@@ -72,36 +72,6 @@ phase = atan2(imag(dataTransform),real(dataTransform));
 %This will make the initial N x N matrix
 originalData = fourierMatrix(dataTransform);
 
-%{
-xVectorOriginal = [];
-for col = 1:numEntries,
-    xVectorOriginal = [xVectorOriginal sum(originalData(:,col))]; 
-end
-%}
-
-%this will compare two matrices and compare the column vectors in each
-matrixOne = originalData;
-matrixTwo = originalData;
-sizeOne = size(matrixOne);
-sizeTwo = size(matrixTwo);
-Diffs = [];
-SmallDiffs = [];
-for col1 = 1:sizeOne(2),
-    currentDiff = [];
-    for col2 = 1:sizeTwo(2),
-        
-        currentCol1 = matrixOne(:,col1);
-        currentCol2 = matrixTwo(:,col2);
-        
-        difference = norm(currentCol1-currentCol2,2);
-        currentDiff = [currentDiff difference];
-        if difference < 5
-            SmallDiffs = [SmallDiffs;col1 col2];
-        end
-    end
-    Diffs = [Diffs;currentDiff];
-end
-
 %this will do a phase shift and then make a new matrix
 countArray = [];
 for phaseShift = 0:(2*pi)/numEntries:2*pi,
@@ -112,9 +82,10 @@ for phaseShift = 0:(2*pi)/numEntries:2*pi,
     
     newTransform = amplitude.*multiplier;
     
-    shiftedData = fourierMatrix(newTransform);
+    %shiftedData = fourierMatrix(newTransform);
     
-    
+    difference = norm(newTransform-dataTransform);
+    countArray = [countArray;difference];
 
 end
 

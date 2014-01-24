@@ -6,18 +6,16 @@ function [ fData ] = fourierMatrix( dataTransform )
 %    We will then make an NxN matrix where each column is a different t
 %        and each row is a term in the summation
 
-fData = [];
-sizeVector = size(dataTransform);
-numEntries = sizeVector(2);
-for k = 0:(numEntries-1),
-    currentRow = [];
-    for tVal = 0:(numEntries-1),
-        index = k+1;
-        value = dataTransform(index)*exp(2*pi*1i*tVal*k/numEntries);
-        currentRow = [currentRow value];
-    end
-    fData = [fData;currentRow];
-end
+sizeTransform = size(dataTransform);
+numEntries = sizeTransform(2);
 
+%puts the coefficients into a diagonal matrix
+fCoeffs = diag(dataTransform);
+
+%makes the base matrix
+baseFourier = baseFourierMatrix(numEntries);
+
+%the matrix we desired is the diagonalMatrix*baseMatrix
+fData = fCoeffs*baseFourier;
 end
 

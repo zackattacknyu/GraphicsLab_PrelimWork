@@ -103,3 +103,36 @@ end
     %}
     
     %countArray = [countArray meanDifference];
+
+    
+    %{
+xVectorOriginal = [];
+for col = 1:numEntries,
+    xVectorOriginal = [xVectorOriginal sum(originalData(:,col))]; 
+end
+%}
+
+    %{
+%this will compare two matrices and compare the column vectors in each
+matrixOne = originalData;
+matrixTwo = originalData;
+sizeOne = size(matrixOne);
+sizeTwo = size(matrixTwo);
+Diffs = [];
+SmallDiffs = [];
+for col1 = 1:sizeOne(2),
+    currentDiff = [];
+    for col2 = 1:sizeTwo(2),
+        
+        currentCol1 = matrixOne(:,col1);
+        currentCol2 = matrixTwo(:,col2);
+        
+        difference = norm(currentCol1-currentCol2,2);
+        currentDiff = [currentDiff difference];
+        if difference < 5
+            SmallDiffs = [SmallDiffs;col1 col2];
+        end
+    end
+    Diffs = [Diffs;currentDiff];
+end
+    %}
