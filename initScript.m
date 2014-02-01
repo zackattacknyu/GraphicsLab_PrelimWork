@@ -29,7 +29,7 @@ secondInstance = firstInstance + numPointsSeq + secondNumPoints
 %this creates the signal that will be analyzed
 data = [data1 seqToFind data2 seqToFind data3];
 dataSize = size(data);
-numEntries = dataSize(2);
+bigN = dataSize(2);
 
 %plot the original data
 plot(data);
@@ -58,31 +58,29 @@ coefficients again
 %}
 
 %convert the data to frequency space
-dataTransform = fft(data);
-
-%find the amplitude, frequency, and phase of the fourier transform
-frequency = 0:1/numEntries:(1 - 1/numEntries);
-amplitude = sqrt(real(dataTransform).^2 + imag(dataTransform).^2);
-phase = atan2(imag(dataTransform),real(dataTransform));
-
-%plot(frequency,amplitude)
+dataTransform = baseFourierMatrix(bigN)*transpose(data);
 
 %This will make the initial N x N matrix
 originalData = fourierMatrix(dataTransform);
 
 %this will do a phase shift and then make a new matrix
 countArray = [];
-for phaseShift = 0:(2*pi)/numEntries:2*pi,
+for phaseShift = 1:bigN,
     
-    newPhase = phase + phaseShift;
-    innerExponent = -2*pi*1i.*(newPhase.*frequency);
-    multiplier = exp(innerExponent);
+    newData = circshift(data,[0 phaseShift]);
     
-    newTransform = amplitude.*multiplier;
+    newTransform = baseFourierMatrix(bigN)*transpose(newData);
+    newData = fourierMatrix(newTransform);
     
-    %shiftedData = fourierMatrix(newTransform);
+    diffMatrix = originalData - newData;
+
+    difference = 0;
+    for col = 1:bigN,
+       if(norm(diffMatrix(:,col)) < 10)
+           difference = difference + 1;
+       end
+    end
     
-    difference = norm(newTransform-dataTransform);
     countArray = [countArray;difference];
 
 end

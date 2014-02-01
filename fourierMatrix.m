@@ -13,7 +13,7 @@ numEntries = sizeTransform(2);
 fCoeffs = diag(dataTransform);
 
 %makes the base matrix
-baseFourier = baseFourierMatrix(numEntries);
+baseFourier = inverseFourierMatrix(numEntries);
 
 %the matrix we desired is the diagonalMatrix*baseMatrix
 fData = fCoeffs*baseFourier;
