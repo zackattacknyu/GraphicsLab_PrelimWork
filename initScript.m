@@ -37,18 +37,16 @@ plot(data);
 %{
 
 Procedure to be used: 
-1. Take the N coefficients from the FFT
+1. Multiply the signal by the Fourier Matrix to get the Fourier
+Coefficients
 2. Construct an NxN matrix A
     When reconstructing the signal we know that 
         x[t] = 1/N sum_{k=0}^{N-1} X_k exp(2*pi*i*t*k/N)
     We will then make an NxN matrix where each column is a different t
         and each row is a term in the summation
 3. TODO: Plot the wave for each of the cofficients
-4. Do a phase shift on the FFT
-     Find the amplitude and phase array
-     Adjust the values of the phase array to make array newPhase
-     Use amplitude and newPhase to get new Fourier cofficients
-        Do amplitude*exp(i*newPhase)
+4. Do a phase shift. Shift the signal by one and then obtain the Fourier
+coefficients again
 5. Repeat step 2 for the new Fourier coefficients to generate
     a new NxN matrix B
 6. Compare matrix A and matrix B to see if there any line ups
