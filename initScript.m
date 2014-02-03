@@ -76,12 +76,19 @@ for phaseShift = 1:bigN,
     
     newData = circshift(data,[0 phaseShift]);
     
+    %{
+    Shifting the matrix over is equivalent to these commands:
+    
+    
     newTransform = baseFourierMatrix(bigN)*transpose(newData);
     new_fCoeffsMatrix = diag(newTransform);
     newDataFreqSpace = new_fCoeffsMatrix/baseFourierMatrixN;
     newDataFreqSpaceReal = real(newDataFreqSpace);
+    %}
+    shiftedOriginalData = circshift(originalDataFreqSpaceReal,[0 phaseShift]);
     
-    diffMatrix = originalDataFreqSpaceReal - newDataFreqSpaceReal;
+    %diffMatrix = originalDataFreqSpaceReal - newDataFreqSpaceReal;
+    diffMatrix = originalDataFreqSpaceReal - shiftedOriginalData;
     
     difference = 0;
     for col = 1:bigN,
