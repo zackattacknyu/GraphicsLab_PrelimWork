@@ -28,11 +28,14 @@ secondInstance = firstInstance + numPointsSeq + secondNumPoints
 
 %this creates the signal that will be analyzed
 data = [data1 seqToFind data2 seqToFind data3];
+
+%TEST CODE: makes a small array of data
+%   section 3,4,5 and 10,11,12 are the same
+data = [2 3 10 12 13 1 3 4 2 10 12 13 5 4];
+%data = [2 3 4 4 4 1 3 4 2 4 4 4 5 4];
+
 dataSize = size(data);
 bigN = dataSize(2);
-
-%plot the original data
-plot(data);
 
 %{
 
@@ -58,25 +61,31 @@ coefficients again
 %}
 
 %convert the data to frequency space
-dataTransform = baseFourierMatrix(bigN)*transpose(data);
+baseFourierMatrixN = baseFourierMatrix(bigN);
+dataTransform = baseFourierMatrixN*transpose(data);
+fCoeffsMatrix = diag(dataTransform);
 
 %This will make the initial N x N matrix
-originalData = fourierMatrix(dataTransform);
+originalDataFreqSpace = fCoeffsMatrix/baseFourierMatrixN;
+originalDataFreqSpaceReal = real(originalDataFreqSpace);
 
 %this will do a phase shift and then make a new matrix
+
 countArray = [];
 for phaseShift = 1:bigN,
     
     newData = circshift(data,[0 phaseShift]);
     
     newTransform = baseFourierMatrix(bigN)*transpose(newData);
-    newData = fourierMatrix(newTransform);
+    new_fCoeffsMatrix = diag(newTransform);
+    newDataFreqSpace = new_fCoeffsMatrix/baseFourierMatrixN;
+    newDataFreqSpaceReal = real(newDataFreqSpace);
     
-    diffMatrix = originalData - newData;
-
+    diffMatrix = originalDataFreqSpaceReal - newDataFreqSpaceReal;
+    
     difference = 0;
     for col = 1:bigN,
-       if(norm(diffMatrix(:,col)) < 10)
+       if(norm(diffMatrix(:,col)) < 1.5)
            difference = difference + 1;
        end
     end
@@ -84,6 +93,26 @@ for phaseShift = 1:bigN,
     countArray = [countArray;difference];
 
 end
+
+plot(countArray);
+
+xVector = 1:1:bigN;
+plot(xVector,originalDataFreqSpaceReal(1,:),...
+xVector,originalDataFreqSpaceReal(2,:),...
+xVector,originalDataFreqSpaceReal(3,:),...
+xVector,originalDataFreqSpaceReal(4,:),...
+xVector,originalDataFreqSpaceReal(5,:),...
+xVector,originalDataFreqSpaceReal(6,:),...
+xVector,originalDataFreqSpaceReal(7,:),...
+xVector,originalDataFreqSpaceReal(8,:),...
+xVector,originalDataFreqSpaceReal(9,:),...
+xVector,originalDataFreqSpaceReal(10,:),...
+xVector,originalDataFreqSpaceReal(11,:),...
+xVector,originalDataFreqSpaceReal(12,:),...
+xVector,originalDataFreqSpaceReal(13,:),...
+xVector,originalDataFreqSpaceReal(14,:),...
+xVector,data);
+
 
 
 
