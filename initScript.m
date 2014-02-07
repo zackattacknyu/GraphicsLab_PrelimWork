@@ -1,7 +1,8 @@
 %TEST CODE: makes a small array of data
 %data = [2 4 7 8 3 4 9 10 23 12 3 9 10 12 13 1 3 4 2 9 10 12 13 5 4];
 %data = [2 3 4 4 4 1 3 4 2 4 4 4 5 4];
-data = [2 10 12 13 14 15 20 34 45 67 2 10 12 13 14 15 20];
+%data = [2 10 12 13 14 15 20 34 45 67 2 10 12 13 14 15 20];
+data = [2 3 15 2 3];
 
 dataSize = size(data);
 bigN = dataSize(2);
@@ -34,7 +35,6 @@ fCoeffsMatrix = diag(dataTransform);
 
 %This will make the initial N x N matrix
 originalDataFreqSpace = fCoeffsMatrix/baseFourierMatrixN;
-%originalDataFreqSpace = fCoeffsMatrix*baseFourierMatrixN;
 originalDataFreqSpaceReal = real(originalDataFreqSpace);
 
 %this will do a phase shift and then make a new matrix
