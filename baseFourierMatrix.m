@@ -27,7 +27,5 @@ for kVal = 1:((bigN-1)/2),
     fData = [fData;currentRow];
 end
 
-fData*transpose(fData)
-
 end
 
