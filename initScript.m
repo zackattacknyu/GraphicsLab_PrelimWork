@@ -2,15 +2,30 @@
 %data = [2 4 7 8 3 4 9 10 23 12 3 9 10 12 13 1 3 4 2 9 10 12 13 5 4];
 %data = [2 3 4 4 4 1 3 4 2 4 4 4 5 4];
 %data = [2 10 12 13 14 15 20 34 45 67 2 10 12 13 14 15 20];
-data = [2 3 4 8 2 3 4 5 9 6];
+start_data = [2 3 4 8 2 3 4 5 9 6];
 %data = [1 2 4 3 12 100 104 105 6 9 8 5 7 100 104 105 11 10];
+
+data = start_data;
 
 dataSize = size(data);
 bigN = dataSize(2);
 
+%test the effects of a gradient
+%{
+gradient = 0:1:bigN-1;
+data = start_data+gradient;
+%}
+
+%test the low-pass filter
+%{
+data = conv(start_data,[0.5 0.5]);
+dataSize = size(data);
+bigN = dataSize(2);
+%}
+
 %convert the data to frequency space
 baseFourierMatrixN = baseFourierMatrix(bigN+1);
-freqSpaceData = baseFourierMatrixN*diag(data)
+freqSpaceData = baseFourierMatrixN*diag(data);
 
 varianceMatrix = specMultiply(transpose(freqSpaceData),freqSpaceData);
 
