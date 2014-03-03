@@ -24,29 +24,9 @@
 \begin{document}
 \setlength{\parskip}{1.2ex plus0.3ex minus 0.3ex}
 
-\subsection*{Proof of Orthogonality}
+\subsection*{Convolution Theorem for our example}
 
-To prove that our matrix is orthogonal, we need to prove that any two vectors have dot product of zero. In this case the number of data points is $n$ and for simplicity of the proof we will let $N = n-1$. 
-\\
-Let $\phi = \frac{2\pi}{N}$
-\\
-We will have to prove that
-\[
-\sum_{k=0}^{N/2}{cos(t \cdot k \cdot \phi)cos(t' \cdot k \cdot \phi) + sin(t \cdot k \cdot \phi)sin(t' \cdot k \cdot \phi)} = 0
-\]
-By Trig Identities it holds that
-\[
-cos(A-B) = cos(A)cos(B) + sin(A)sin(B)
-\]
-We can then assert that the above equation is equivalent to saying
-\[
-\sum_{k=0}^{N/2}{cos((t-t') \cdot k \cdot \phi)} = 0
-\]
-Let $C = |t-t'|$. Since $cos(\theta)=cos(-\theta)$ we can assume that $t-t'>0$. Thus we just have to prove that
-\[
-\sum_{k=0}^{N/2}{cos(\frac{2\pi C k}{N})} = 0
-\]
-For each angle, there is another one on the other side of $\pi/2$. **INSERT DETAILS**
+
 
 
 \end{document}
