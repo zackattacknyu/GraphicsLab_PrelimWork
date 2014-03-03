@@ -31,9 +31,23 @@ Let the following be true
 T_1(f) = \int{f(x) cos(\phi x) \,dx}
 \]
 \[
-T_2(f) = \int{f(x) cos(\phi x) \,dx}
+T_2(f) = \int{f(x) sin(\phi x) \,dx}
 \]
-
+Take the functions $f$ and $g$ and let $h = f*g$, then it is conjectured that
+\[
+T_1(h) = T_1(f) T_1(g) - T_2(f)T_2(g)
+\]
+\[
+T_2(h) = T_1(f) T_2(g) + T_1(g)T_2(f)
+\]
+This comes from the fact that in the proof of the convolution theorem, when computing the integral for the convolution, they are able to separate the integral due to the fact that $e^{x+y} = e^x  e^y$. In our case,
+\[
+cos( \phi(x+y) ) = cos(\phi x)cos(\phi y) - sin(\phi x)sin(\phi y)
+\]
+\[
+sin( \phi(x+y) ) = cos(\phi x)sin(\phi y) + sin(\phi x)cos(\phi y)
+\]
+Applying the above identities to the integral for $T_1$ and $T_2$ should lead to the conjecture. 
 
 \end{document}
 
