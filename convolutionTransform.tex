@@ -48,6 +48,13 @@ cos( \phi(x+y) ) = cos(\phi x)cos(\phi y) - sin(\phi x)sin(\phi y)
 sin( \phi(x+y) ) = cos(\phi x)sin(\phi y) + sin(\phi x)cos(\phi y)
 \]
 Applying the above identities to the integral for $T_1$ and $T_2$ should lead to the conjecture. 
+\\
+With convolution theorem, it says that
+\[
+F(f*g) = F(f) \cdot F(g)
+\]
+The point-wise multiplication means multiplication of the frequencies. \\
+TODO: Prove this out in Matlab. \\I tried doing $f = [0.5,0.5]$ and $g = [2,3]$ \\and then seeing if $fft(f*g) = fft(f) \cdot fft(g)$
 
 \end{document}
 
