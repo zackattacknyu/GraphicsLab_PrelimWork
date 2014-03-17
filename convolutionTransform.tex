@@ -49,12 +49,21 @@ sin( \phi(x+y) ) = cos(\phi x)sin(\phi y) + sin(\phi x)cos(\phi y)
 \]
 Applying the above identities to the integral for $T_1$ and $T_2$ should lead to the conjecture. 
 \\
+
+\subsection*{Proving Convolution Theorem in Normal Case}
 With convolution theorem, it says that
 \[
 F(f*g) = F(f) \cdot F(g)
 \]
 The point-wise multiplication means multiplication of the frequencies. \\
-TODO: Prove this out in Matlab. \\I tried doing $f = [0.5,0.5]$ and $g = [2,3]$ \\and then seeing if $fft(f*g) = fft(f) \cdot fft(g)$
+
+Here is the procedure for doing it in Matlab
+\begin{itemize}
+\item The variables data,filter will be used
+\item Let filteredData = conv(data,filter)
+\item Let paddedData and paddedFilter be data and filter but with zeros added to the end
+\item Do fft(filteredData) and notice that it is equal to fft(paddedData).*fft(paddedFilter)
+\end{itemize}
 
 \end{document}
 
