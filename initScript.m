@@ -13,7 +13,7 @@ numInitEntries = startDataSize(2);
 %   a point in N-dimensional space
 %we will look at the components and see what we find
 
-freqSpaceOriginal = generateFreqSpaceData(start_data);
+
 
 %test the low-pass filter and see the effects
 %the matlab convolution function will use 0 as the first signal entry
@@ -22,28 +22,49 @@ freqSpaceOriginal = generateFreqSpaceData(start_data);
 filter = [0.5 0.5];
 filterSize = size(filter);
 numEntriesFilter = filterSize(2);
-data = conv(start_data,[0.5 0.5]);
+data = conv(start_data,filter);
 dataSize = size(data);
 numColumns = dataSize(2);
 
+%puts in padding for convolution theorem showing
 paddedFilter = zeros(1,numColumns);
 paddedFilter(1:numEntriesFilter) = filter;
 paddedStartData = zeros(1,numColumns);
 paddedStartData(1:numInitEntries) = start_data;
 
+%shows the convolution theorem for our case
 fftData = fft(data);
 fftStartDataFilter = fft(paddedStartData).*fft(paddedFilter);
 fftDiff = abs(fftData-fftStartDataFilter);
 
-data = data(2:numColumns); %take out first entry
-freqSpaceLowPass = generateFreqSpaceData(data);
+%data = data(2:numColumns); %take out first entry
+midIndex = floor(numColumns/2) + 1;
+nextMidIndex = midIndex + 1;
+[freqSpaceLowPass,lowPassSignalTransformed] = generateFreqSpaceData(data);
+lowPassTransformCosPart = lowPassSignalTransformed(2:midIndex);
+lowPassTransformSinPart = lowPassSignalTransformed(nextMidIndex:numColumns);
+
+%attempts a convolution theorem style thing for our case
+[freqSpaceOriginal,origSignalTransformed] = generateFreqSpaceData(paddedStartData);
+origTransformCosPart = origSignalTransformed(2:midIndex);
+origTransformSinPart = origSignalTransformed(nextMidIndex:numColumns);
+
+[filterData,filterTransformed] = generateFreqSpaceData(paddedFilter);
+filterTransformCosPart = filterTransformed(2:midIndex);
+filterTransformSinPart = filterTransformed(nextMidIndex:numColumns);
+
+predictedCosPart = origTransformCosPart.*filterTransformCosPart -...
+    origTransformSinPart.*filterTransformSinPart;
+predictedSinPart = origTransformCosPart.*filterTransformSinPart +...
+    origTransformSinPart.*filterTransformCosPart;
+
 
 %test the effects of a gradient
 dataSize = size(start_data);
 bigN = dataSize(2);
 gradient = 0:1:bigN-1;
 data = start_data+gradient;
-freqSpaceGradient = generateFreqSpaceData(data);
+[freqSpaceGradient,gradientTransformed] = generateFreqSpaceData(data);
 
 %{
 
