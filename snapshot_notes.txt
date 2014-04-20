@@ -1,0 +1,15 @@
+Cost Analysis Pic:
+This analyzes the cost. 
+We want to put the D' in the first or third one since then only two access requirements
+	will have an extra node added to them instead of three access reqirements, thus
+	the total cost is 2 instead of 3. 
+	
+
+Tree structure pic
+With duplication, this is a tree and at each level are the different stages of duplication
+- At first level, seek time is reduced but redundancy is added by 1
+- Same at subsequent levels
+- Eventually, all the data units are put together but we have a lot of redundancy. 
+Currently, the algorithm goes with reducing seek time if possible and does not consider the impact upon the memory. 
+
+	

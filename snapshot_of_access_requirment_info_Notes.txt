@@ -1,7 +1,0 @@
-This analyzes the cost. 
-
-We want to put the D' in the first or third one since then only two access requirements
-	will have an extra node added to them instead of three access reqirements, thus
-	the total cost is 2 instead of 3. 
-	
-	
